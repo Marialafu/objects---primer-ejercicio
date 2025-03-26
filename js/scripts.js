@@ -101,7 +101,7 @@ const changeWordToUpperCase = wordsArray => {
   for (const word of wordsArray) {
     wordsChangedToUpperCase.push(word.toUpperCase());
   }
-  towerData.levelFive = wordsChangedToUpperCase;
+  towerData.levelFive.uppercasedWords = wordsChangedToUpperCase;
   return wordsChangedToUpperCase;
 };
 
@@ -110,20 +110,9 @@ const changeWordToLowerCase = wordsArray => {
   for (const word of wordsArray) {
     wordsChangedToLowerCase.push(word.toLowerCase());
   }
-  towerData.levelFive = wordsChangedToLowerCase;
+  towerData.levelFive.lowercasedWords = wordsChangedToLowerCase;
   return wordsChangedToLowerCase;
 };
-
-const fillLevels = sentence => {
-  const levelOne = extractVowels(sentence);
-  const levelTwo = extractConsonants(sentence);
-  const levelThree = divideSentenceInWords(sentence);
-  const levelFour = calculateWordsLenght(levelThree);
-  const levelFiveFirstPart = changeWordToUpperCase(levelThree);
-  const levelFiveSecondPart = changeWordToLowerCase(levelFiveFirstPart);
-};
-
-fillLevels('La Biblioteca de Consonantes Prohibidas');
 
 // 6️⃣ Nivel Seis: El Encriptador de Secretos
 // Crea un mensaje secreto aplicando las siguientes reglas:
@@ -140,11 +129,60 @@ fillLevels('La Biblioteca de Consonantes Prohibidas');
 
 // Guarda el resultado en towerData.levelSix.secretMessage.
 
+// string.replaceAll(valorBuscar, valorReemplazar)
+
+const createSecretMessage = (sentence) => {
+
+  const vowelsList = ['a', 'e', 'i', 'o', 'u']
+  const numberList = ['1', '2', '3', '4', '5']
+  const prueba = ''
+
+  for (const letter of sentence){
+    letter.replace(vowelsList, numberList)
+  }
+  
+  console.log(prueba);
+  
+  for (let i = 0; i < sentence.length; i++){
+    sentence.replaceAll(vowelsList[i], numberList[i])
+
+  }
+  const secretMessage = 'K1bZ3zk34s2b1dc2hB4mr4m1ms2rtÑq4g3z3c1r'
+
+  towerData.levelSix.secretMessage = secretMessage
+
+ return secretMessage
+}
+
+
+
+
 // 7️⃣ Nivel Siete: El Oráculo de la Suma
 // Calcula la suma total de las longitudes de todas las palabras obtenidas en el nivel 4 y almacénalo en towerData.levelSeven.totalLength.
 
+const calculateSumOfLength = (wordsLength) => {
+  let totalWordsLength = 0
+  for (const wordLength of wordsLength){
+    totalWordsLength += wordLength 
+  }
+  towerData.levelSeven.totalLength = totalWordsLength
+  return totalWordsLength
+}
+
+
+
 // 8️⃣ Nivel Ocho: El Reflejo Invertido
 // Invierte cada palabra del array towerData.levelThree.words y guárdalas en towerData.levelEight.reversedWords.
+
+const reverseEachWord = (words) => {
+  const reversedWordsList = []
+  for (const word of words){
+    const reversedWord = word.split('').reverse('').join('')
+    reversedWordsList.push(reversedWord)
+  }
+  towerData.levelEight.reversedWords = reversedWordsList
+  return reversedWordsList
+}
 
 // 9️⃣ Nivel Nueve: La Cámara del Códex Aleatorio
 // Genera un código único combinando:
@@ -156,6 +194,20 @@ fillLevels('La Biblioteca de Consonantes Prohibidas');
 // Un número aleatorio entre 1000 y 9999.
 
 // Almacena el código generado en towerData.levelNine.randomCode.
+const aleatoryNumber = Math.floor(Math.random()*(9999-1000)+1000)
+
+const generateAleatoryCode = (revertedWords, numbersLenght) => {
+  let lettersCode = ''
+  for (const revertedWord of revertedWords){
+    lettersCode += revertedWord.charAt(0)
+  }
+  let numbersCode = numbersLenght / 2
+
+  const aleatoryCode = lettersCode + numbersCode + aleatoryNumber
+
+  towerData.levelNine.randomCode = aleatoryCode
+  return aleatoryCode  
+}
 
 // 🔟 Nivel Diez: La Prueba Suprema - El Guardián del Código Final
 // Usa TODOS los valores obtenidos en los niveles anteriores para generar un código maestro único.
@@ -163,3 +215,33 @@ fillLevels('La Biblioteca de Consonantes Prohibidas');
 // La fórmula del código maestro será la siguiente:
 
 // finalMessage = (Total de vocales _ Longitud total obtenida en el nivel 7) + (Cantidad de consonantes _ Número aleatorio generado en Nivel 9) - (Número de palabras * Número de caracteres en el mensaje secreto)
+
+const generateMasterCode = (vowels, totalNumbersLenght, consonants, aleatoryNumber, words, sentence) => {
+
+  const totalVowels = vowels.length
+  const totalConsonants = consonants.length
+
+  const totalWords = words.length
+  const totalCharacters = sentence.length
+  
+  const masterCode = (totalVowels - totalNumbersLenght) + (totalConsonants - aleatoryNumber) - (totalWords * totalCharacters)
+
+  towerData.levelTen.finalMessage = masterCode
+  return masterCode
+}
+
+const fillLevels = sentence => {
+  const levelOne = extractVowels(sentence);
+  const levelTwo = extractConsonants(sentence);
+  const levelThree = divideSentenceInWords(sentence);
+  const levelFour = calculateWordsLenght(levelThree);
+  const levelFiveFirstPart = changeWordToUpperCase(levelThree);
+  const levelFiveSecondPart = changeWordToLowerCase(levelFiveFirstPart);
+  const levelSix = createSecretMessage(sentence)
+  const levelSeven = calculateSumOfLength(levelFour)
+  const levelEight = reverseEachWord(levelThree)
+  const levelNine = generateAleatoryCode(levelEight, levelSeven)
+  const levelTen = generateMasterCode(levelOne, levelSeven, levelTwo, aleatoryNumber, levelThree, sentence)
+};
+
+fillLevels('La Biblioteca de Consonantes Prohibidas');
